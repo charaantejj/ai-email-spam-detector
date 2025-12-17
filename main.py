@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from services.gmail_services import get_gmail_service, read_email_body
+from ml.predict import predict_spam
 import os
 
 app = FastAPI()
@@ -98,10 +99,13 @@ def fetch_emails():
 
         body = read_email_body(message)
 
-        emails.append({
+        prediction = predict_spam(body)
+
+    emails.append({
             "from": sender,
             "subject": subject,
-            "body": body[:300]  # trim for now
-        })
-
+            "spam": prediction["label"],
+            "confidence": prediction["confidence"],
+            "preview": body[:200]
+    })
     return emails
