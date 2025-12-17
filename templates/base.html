@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpamAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="nav">
+    <div class="logo">SpamAI</div>
+    <div class="tabs">
+        <a class="active">Inbox</a>
+        <a>Live</a>
+        <a>Stats</a>
+        <a>Settings</a>
+    </div>
+</nav>
+
+<main class="content">
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

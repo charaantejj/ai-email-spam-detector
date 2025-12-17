@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Inbox Analysis</h1>
+<p class="subtitle">AI-based spam classification</p>
+
+{% for email in emails %}
+<div class="card">
+    <div class="header">
+        <span class="from">{{ email.from }}</span>
+        <span class="badge {{ email.spam|lower }}">{{ email.spam }}</span>
+    </div>
+
+    <div class="subject">{{ email.subject }}</div>
+
+    <div class="confidence">
+        Confidence: {{ email.confidence }}%
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

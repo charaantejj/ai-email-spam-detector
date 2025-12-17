@@ -1,12 +1,18 @@
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
-from services.gmail_services import get_gmail_service, read_email_body
+from services.gmail_service import get_gmail_service, read_email_body
 from ml.predict import predict_spam
 import os
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 
 CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
@@ -56,10 +62,10 @@ def auth_callback(request: Request):
     return RedirectResponse("/emails")
 
 
-@app.get("/emails")
-def fetch_emails():
+@app.get("/emails", response_class=HTMLResponse)
+def fetch_emails(request: Request):
     if not user_credentials:
-        return {"error": "User not authenticated"}
+        return RedirectResponse("/login")
 
     creds = Credentials(
         token=user_credentials.token,
@@ -71,21 +77,15 @@ def fetch_emails():
     )
 
     service = get_gmail_service(creds)
-
     results = service.users().messages().list(
-        userId="me",
-        maxResults=5
+        userId="me", maxResults=5
     ).execute()
-
-    messages = results.get("messages", [])
 
     emails = []
 
-    for msg in messages:
+    for msg in results.get("messages", []):
         message = service.users().messages().get(
-            userId="me",
-            id=msg["id"],
-            format="full"
+            userId="me", id=msg["id"], format="full"
         ).execute()
 
         headers = message["payload"]["headers"]
@@ -98,14 +98,16 @@ def fetch_emails():
                 sender = h["value"]
 
         body = read_email_body(message)
-
         prediction = predict_spam(body)
 
-    emails.append({
+        emails.append({
             "from": sender,
             "subject": subject,
             "spam": prediction["label"],
             "confidence": prediction["confidence"],
-            "preview": body[:200]
-    })
-    return emails
+        })
+
+    return templates.TemplateResponse(
+        "inbox.html",
+        {"request": request, "emails": emails}
+    )

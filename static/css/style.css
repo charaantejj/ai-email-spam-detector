@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #F8F8F8;
+    color: #2B2B2B;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 18%;
+    background: #FFFFFF;
+}
+
+.tabs a {
+    margin-left: 32px;
+    color: #898989;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.tabs .active {
+    color: #2B2B2B;
+}
+
+.content {
+    padding: 64px 18%;
+}
+
+.card {
+    background: #FFFFFF;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.subject {
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.badge.spam {
+    background: #E8E8E8;
+}
+
+.badge.not\ spam {
+    background: #F8F8F8;
+}
