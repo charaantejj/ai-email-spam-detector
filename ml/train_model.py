@@ -5,7 +5,7 @@ from sklearn.naive_bayes import MultinomialNB
 from ml.preprocess import clean_text
 
 # Load dataset
-df = pd.read_csv("dataset/spam.csv")  # label, text
+df = pd.read_csv("dataset/spam_large.csv")  # label, text
 
 df["clean_text"] = df["text"].apply(clean_text)
 
